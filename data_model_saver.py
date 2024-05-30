@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 from models.StockPredictor import StockPredictor
-from utils.train_on_data import train_on_data
+from utils.train_on_prediction import train_on_prediction
 
 learning_rates = [0.1, 0.01, 0.001, 0.0001]
 epochs_counts = [50,100,250]
@@ -29,9 +29,9 @@ for lr in learning_rates:
                     criterion = nn.MSELoss().to(device)
                     optimizer = optim.Adam(model.parameters(), lr=lr)
 
-                    train_on_data(num_epochs=num_epochs,data=scaled_data,
+                    train_on_prediction(num_epochs=num_epochs,data=scaled_data,
                                 n=n,device=device,model=model,
                                 criterion=criterion,optimizer=optimizer)
 
-                    torch.save(model,"./saved_models/on_data/lr%sep%shls%shla%sn%s.pth"%(lr,num_epochs,hls,hla,n))
+                    torch.save(model,"./saved_models/on_pred/lr%sep%shls%shla%sn%s.pth"%(lr,num_epochs,hls,hla,n))
                     
