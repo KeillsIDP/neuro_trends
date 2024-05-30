@@ -10,7 +10,7 @@ import glob
 with open("TICK.txt") as file: #открываем файл и берем названия акций
     tickers = [row.strip() for row in file]
     
-startDate = '2022-03-24' # дата с начала которой будет браться информация о торгах
+startDate = '2023-03-24' # дата с начала которой будет браться информация о торгах
 endDate = dt.datetime.today() # дата до которой будет браться информация
 async def getData(ticker):
     try:
@@ -20,25 +20,27 @@ async def getData(ticker):
         print(e) # вывод при ошибке
         
 async def main():
-    #for tick in tickers: # для каждой акции запускаем асинхронно функцию получения данных
-    #    await getData(tick)
+    for tick in tickers: # для каждой акции запускаем асинхронно функцию получения данных
+        await getData(tick)
     tables_files = glob.glob(os.path.join("./tables/", "*.xlsx")) 
     
-    # data_stock = None
-    # for file in tables_files:
-    #     data = pd.read_excel(file,index_col="TRADEDATE")
+    data_stock = None
+    for file in tables_files:
+        data = pd.read_excel(file,index_col="TRADEDATE")
         
-    #     if(data_stock is None):
-    #         data_stock = data
-    #     else:
-    #         data_stock = data_stock.join(data["CLOSE"],how='outer')
-    #     data_stock.rename(columns={'CLOSE':os.path.basename(file).split('.')[0]},inplace=True)
-    #     data_stock.to_excel("./data_stock.xlsx")
+        if(data_stock is None):
+            data_stock = data
+        else:
+            data_stock = data_stock.join(data["CLOSE"],how='outer')
+        data_stock.rename(columns={'CLOSE':os.path.basename(file).split('.')[0]},inplace=True)
+        data_stock.to_excel("./data_stock_test.xlsx")
     
     tables = []
     for file in tables_files:
         data = pd.read_excel(file,index_col="TRADEDATE")
         copy = data.copy()
+        if(len(copy.values)==0):
+            continue
         copy.values[0] = 0
 
         close_values = data["CLOSE"]
@@ -62,5 +64,5 @@ async def main():
         
     data_stock_labels.fillna(0,inplace=True)
     print(data_stock_labels)
-    data_stock_labels.to_excel("./data_stock_labels.xlsx")
+    data_stock_labels.to_excel("./data_stock_labels_test.xlsx")
 asyncio.run(main()) # запускаем поток
