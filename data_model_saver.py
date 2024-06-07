@@ -7,7 +7,7 @@ from sklearn.preprocessing import MinMaxScaler
 from models.StockPredictor import StockPredictor
 from utils.train_on_prediction import train_on_prediction
 
-learning_rates = [0.1, 0.01, 0.001, 0.0001]
+learning_rates = [0.001]
 epochs_counts = [50,100,250]
 hiden_layers_sizes = [16,32,64,128]
 hiden_layers_amount = [1,2,4,8,16]
@@ -24,6 +24,10 @@ for lr in learning_rates:
         for hls in hiden_layers_sizes:
             for hla in hiden_layers_amount:
                 for n in windows:
+                    if (num_epochs==50):
+                        continue
+                    if(num_epochs == 100 and hls!=128):
+                        continue
                     model = StockPredictor(1, hls, hla, 1, device).to(device)
 
                     criterion = nn.MSELoss().to(device)
